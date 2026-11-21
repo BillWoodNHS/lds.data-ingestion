@@ -57,6 +57,19 @@ tables in `local.duckdb` and runs `dbt build --target local`. DuckDB has no per-
 `<database>.<schema>` becomes the schema `<database>__<schema>`, e.g. `lds_emis__raw`. Open
 `local.duckdb` to insert sample rows into the raw tables and rerun `dbt build --profiles-dir profiles`.
 
+## Observability
+
+Every dataset gets generated monitoring, described in `engine/docs/observability.md`:
+- `<dataset>__status`: health per table (`ok` / `attention` / `incomplete`);
+- row accounting (`reconciliation`, `not_presented`);
+- lineage columns on `latest` and `continuum`;
+- `unclassified_columns`;
+- source freshness;
+- in Snowflake, load audit, unloaded files and pipe health.
+
+Every run is logged to `lds_audit.run_log`, and the rows behind every test warning or failure are
+kept in `lds_audit`.
+
 ## Environments and deployment
 
 There is one Snowflake account per environment: `dev`, `test`, `uat` and `prod`.

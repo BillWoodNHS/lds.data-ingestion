@@ -28,7 +28,7 @@ snowflake:
 database_roles:
   raw_reader:    { read: [raw],         write: [],       granted_to: [engineer] }
   ingest_reader: { read: [ingest],      write: [],       granted_to: [reader] }
-  transformer:   { read: [raw, ingest], write: [ingest], granted_to: [transformer] }
+  transformer:   { read: [raw, ingest], write: [ingest], monitor: true, granted_to: [transformer] }
 
 governance:
   # Most restrictive first (tag propagation resolves conflicts in this order). Proposed values,

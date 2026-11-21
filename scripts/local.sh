@@ -14,3 +14,5 @@ rm -f "$LDS_DUCKDB_PATH" "$LDS_DUCKDB_PATH.wal"
 lds-engine local-ddl --apply "$LDS_DUCKDB_PATH"
 dbt deps --profiles-dir profiles --quiet
 dbt build --profiles-dir profiles --target local
+# late data is reported, not fatal, locally (fixture dates are fixed)
+dbt source freshness --profiles-dir profiles --target local || echo "source freshness: see warnings / errors above"

@@ -52,3 +52,6 @@ done
 
 dbt deps --profiles-dir profiles --quiet
 dbt build --profiles-dir profiles --target "$ENV_NAME"
+# freshness against each table's expected cadence (manifest `freshness`); late data is reported, the
+# deployment itself is not failed by it
+dbt source freshness --profiles-dir profiles --target "$ENV_NAME" || echo "##vso[task.logissue type=warning]Source freshness: late data, see log"

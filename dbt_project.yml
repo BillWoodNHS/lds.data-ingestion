@@ -11,3 +11,12 @@ clean-targets: ["target", "dbt_packages", "logs"]
 
 flags:
   send_anonymous_usage_stats: false
+
+# Observability (engine/docs/observability.md): keep the rows behind every test warning or failure,
+# and log every model and test of every run, in <default database>.lds_audit.
+data_tests:
+  +store_failures: true
+  +schema: lds_audit
+
+on-run-end:
+  - "{{ lds_core.log_run_results(results) }}"
