@@ -1,0 +1,30 @@
+# dbt profiles. Use with: dbt <command> --profiles-dir profiles --target <target>
+#  - local: DuckDB file, no credentials (raw tables created by `lds-engine local-ddl --apply`).
+#  - dev/test/uat/prod: Snowflake. Account, role and warehouse come from the engine's environment
+#    files via `lds-engine env --env <env>` (exported as LDS_* variables); the user and key are
+#    pipeline secrets. Generated models set their own database and schema; the database/schema
+#    below are only the connection defaults.
+lds_data_ingestion:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('LDS_DUCKDB_PATH', 'local.duckdb') }}"
+      threads: 4
+
+    dev: &snowflake
+      type: snowflake
+      account: "{{ env_var('LDS_SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      authenticator: snowflake_jwt
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE', '') }}"
+      role: "{{ env_var('LDS_ROLE_TRANSFORMER') }}"
+      warehouse: "{{ env_var('LDS_SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('LDS_DBT_DATABASE', 'TBC_DBT_DEFAULT_DATABASE') }}"   # TBC: connection default only
+      schema: ingest
+      threads: 8
+      client_session_keep_alive: false
+    test: *snowflake
+    uat: *snowflake
+    prod: *snowflake

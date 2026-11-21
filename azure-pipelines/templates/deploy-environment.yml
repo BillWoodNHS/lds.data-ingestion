@@ -1,0 +1,38 @@
+# Deploy one environment. Credentials (TBC names):
+#   variable group  lds-snowflake-<env>   with SNOWFLAKE_USER and SNOWFLAKE_PRIVATE_KEY_PASSPHRASE (secret)
+#   secure file     lds-snowflake-<env>.p8  the deploy user's private key
+# Approvals and checks are configured on the Azure DevOps environment lds-<env>.
+parameters:
+  - name: env
+    type: string
+  - name: dependsOn
+    type: object
+    default: []
+
+stages:
+  - stage: deploy_${{ parameters.env }}
+    displayName: Deploy ${{ parameters.env }}
+    dependsOn: ${{ parameters.dependsOn }}
+    variables:
+      - group: lds-snowflake-${{ parameters.env }}
+    jobs:
+      - deployment: deploy
+        environment: lds-${{ parameters.env }}
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: setup.yml
+                - task: DownloadSecureFile@1
+                  name: snowflakeKey
+                  inputs:
+                    secureFile: lds-snowflake-${{ parameters.env }}.p8
+                - script: scripts/deploy.sh ${{ parameters.env }}
+                  displayName: Deploy to ${{ parameters.env }}
+                  env:
+                    SNOWFLAKE_USER: $(SNOWFLAKE_USER)
+                    SNOWFLAKE_PRIVATE_KEY_PATH: $(snowflakeKey.secureFilePath)
+                    SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: $(SNOWFLAKE_PRIVATE_KEY_PASSPHRASE)
+                    DBT_SEND_ANONYMOUS_USAGE_STATS: "false"

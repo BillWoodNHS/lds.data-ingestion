@@ -1,0 +1,4 @@
+packages:
+  - local: engine/dbt/lds_core
+    name: lds_core
+sha1_hash: 4232c82804617b4f3fd8bb21f03d701c7ea9c851

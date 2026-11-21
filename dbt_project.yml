@@ -1,0 +1,13 @@
+name: lds_data_ingestion
+version: "0.1.0"
+config-version: 2
+profile: lds_data_ingestion
+require-dbt-version: ">=1.8.0"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+clean-targets: ["target", "dbt_packages", "logs"]
+
+flags:
+  send_anonymous_usage_stats: false

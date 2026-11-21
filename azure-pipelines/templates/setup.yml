@@ -1,0 +1,17 @@
+# Shared setup: checkout with the engine submodule, Python, and the engine/dbt/Snowflake CLI.
+steps:
+  - checkout: self
+    submodules: true        # the GitHub service connection needs read access to lds.core.engine
+    fetchDepth: 0           # check-roles compares manifests with the target branch
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.11"
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: Install engine and dbt
+  - script: |
+      pip install pipx
+      pipx install "snowflake-cli>=3.34,<4"
+      echo "##vso[task.prependpath]$HOME/.local/bin"
+    displayName: Install Snowflake CLI (isolated; its dependencies conflict with dbt's)

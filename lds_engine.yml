@@ -1,0 +1,48 @@
+# lds.core.engine configuration for this repository. See engine/README.md.
+# Environment-specific names (accounts, storage, integrations, account roles, warehouses) are NOT
+# here: they live in engine/environments/<env>.yml.
+config_version: 1
+manifests_dir: datasets
+output:
+  snowflake_dir: snowflake          # GENERATED, committed: environment-neutral DDL
+  dbt_models_dir: models/lds_ingest # GENERATED, committed: dbt sources, landed views, tests
+  build_dir: build                  # NOT committed: deployable SQL per environment
+
+naming:                             # TBC (spec 11.6): naming conventions not yet agreed
+  database: "lds_{dataset}"         # a manifest can override with dataset.database
+  raw_schema: raw
+  ingest_schema: ingest
+  stage: landing
+  file_format: landing_format
+  raw_table: "{table}"
+  pipe: "{table}__pipe"
+  dbt_source: "{dataset}_raw"
+  landed_model: "{dataset}__{table}__landed"
+  local_schema: "{database}__{schema}"
+
+snowflake:
+  pipe_mode: create_if_not_exists
+
+# Database roles created in every dataset database. granted_to: logical account roles from
+# engine/environments/<env>.yml (null there skips the grant in that environment).
+database_roles:
+  raw_reader:    { read: [raw],         write: [],       granted_to: [engineer] }
+  ingest_reader: { read: [ingest],      write: [],       granted_to: [reader] }
+  transformer:   { read: [raw, ingest], write: [ingest], granted_to: [transformer] }
+
+governance:
+  # Most restrictive first (tag propagation resolves conflicts in this order). Proposed values,
+  # aligned with Snowflake privacy categories; to be confirmed by IG.
+  pii_taxonomy:
+    - { value: identifier,       description: "directly identifies a person: NHS number, name, address, full date of birth, full postcode" }
+    - { value: quasi_identifier, description: "could identify a person in combination: event dates, partial postcode, ethnicity, rare codes" }
+    - { value: sensitive,        description: "special category content, not identifying alone: diagnoses, clinical codes, results" }
+    - { value: pseudonymised,    description: "pseudonymised tokens standing in for identifiers" }
+    - { value: none,             description: "not personal or sensitive: reference codes, ingestion metadata" }
+  metadata_columns_pii: none        # __ metadata columns are never masked
+
+# Per-environment ingestion behaviour only.
+environments:
+  dev:
+    pipe_mode: replace              # dev pipes are recreated so path filter changes apply
+    path_filters: {}                # e.g. { emis: { extraction_group: [group_a], extract_timestamp: ["202611*"] } }

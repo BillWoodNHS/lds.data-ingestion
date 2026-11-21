@@ -1,0 +1,16 @@
+# Deployment: dev -> test -> uat -> prod, one Snowflake account each. Promotion past dev is gated by
+# the approvals on the Azure DevOps environments lds-test, lds-uat and lds-prod.
+trigger:
+  branches:
+    include: [main]
+pr: none
+
+stages:
+  - template: templates/deploy-environment.yml
+    parameters: { env: dev }
+  - template: templates/deploy-environment.yml
+    parameters: { env: test, dependsOn: [deploy_dev] }
+  - template: templates/deploy-environment.yml
+    parameters: { env: uat, dependsOn: [deploy_test] }
+  - template: templates/deploy-environment.yml
+    parameters: { env: prod, dependsOn: [deploy_uat] }

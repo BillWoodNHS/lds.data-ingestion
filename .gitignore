@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+build/
+target/
+dbt_packages/
+logs/
+*.duckdb
+*.duckdb.wal
+.user.yml
+.env
+*.p8

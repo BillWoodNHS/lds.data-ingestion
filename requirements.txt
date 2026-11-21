@@ -1,0 +1,7 @@
+# Install with: pip install -r requirements.txt   (from the repository root, after
+# `git submodule update --init`). The Snowflake CLI is installed separately with pipx
+# (see README): its dependencies conflict with dbt's.
+-e ./engine
+dbt-core>=1.10,<2
+dbt-duckdb>=1.10,<2
+dbt-snowflake>=1.10,<2

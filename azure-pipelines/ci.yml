@@ -1,0 +1,32 @@
+# Pull request checks. Needs no Snowflake access.
+trigger: none
+pr:
+  branches:
+    include: ["*"]
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  DBT_SEND_ANONYMOUS_USAGE_STATS: "false"
+
+steps:
+  - template: templates/setup.yml
+
+  - script: lds-engine validate
+    displayName: Validate manifests
+
+  - script: lds-engine check
+    displayName: Generated files are up to date
+
+  - script: |
+      target="${SYSTEM_PULLREQUEST_TARGETBRANCH#refs/heads/}"
+      git fetch --no-tags origin "$target"
+      lds-engine check-roles --base "origin/$target"
+    displayName: Role changes have a MAJOR version bump (spec rule 10)
+
+  - script: for env in dev test uat prod; do lds-engine build --env "$env"; done
+    displayName: Build deployable SQL for every environment
+
+  - script: scripts/local.sh
+    displayName: Run generated dbt models and tests on DuckDB

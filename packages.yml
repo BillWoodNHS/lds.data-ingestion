@@ -1,0 +1,2 @@
+packages:
+  - local: engine/dbt/lds_core
