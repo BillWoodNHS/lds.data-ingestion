@@ -1,7 +1,8 @@
 # Dataset manifests
 
-One YAML manifest per dataset (`<dataset>.yml`). The schema and rules are in
-`engine/docs/spec.md` section 8 and `engine/README.md`; worked examples for every protocol are in
+One YAML manifest per dataset (`<dataset>.yml`). Every setting, its default and the validation
+rules are in `engine/docs/manifest-reference.md`. To choose a protocol and see how it behaves, with
+worked examples, start at `engine/docs/protocols/README.md`. Complete example manifests are in
 `engine/examples/datasets/`.
 
 After adding or changing a manifest:

@@ -1,7 +1,8 @@
 # lds.data-ingestion: notes for agents
 
-- The engine is the `engine/` submodule (lds.core.engine); read `engine/README.md` and
-  `engine/docs/spec.md` before changing manifests. Do not edit files under `engine/` here: change
+- The engine is the `engine/` submodule (lds.core.engine); read `engine/docs/README.md`,
+  `engine/docs/manifest-reference.md` and the protocol page in `engine/docs/protocols/` before
+  changing manifests. Do not edit files under `engine/` here: change
   the engine repository and update the submodule.
 - Never hand-edit `snowflake/` or `models/lds_ingest/`. Change `datasets/*.yml` or `lds_engine.yml`
   and run `lds-engine generate`; commit manifests and generated files together.
