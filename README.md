@@ -36,8 +36,13 @@ Or run `make setup`.
 
 ## Adding or changing a dataset
 
-1. Write or edit `datasets/<dataset>.yml`. Copy from `engine/examples/datasets/`; there is one
-   example per protocol.
+1. Write or edit `datasets/<dataset>.yml`. The easiest way is the manifest builder: run
+   `lds-engine builder` (or `make builder`) and use the page it opens. It imports column lists and
+   `CREATE TABLE` scripts, explains each choice, checks the manifest with the engine and saves it
+   into `datasets/`. A data steward without the engine can use a static copy
+   (`make builder-export`) and send the downloaded file to an engineer. See
+   `engine/docs/builder.md`. Or copy from `engine/examples/datasets/`; there is one example per
+   protocol.
 2. Run `lds-engine validate`. It lists every problem with its location and rule, e.g.
    `emis.yml: tables[0].keys[1]: [R2] ...`.
 3. Run `lds-engine generate` to write `snowflake/` and `models/lds_ingest/`.

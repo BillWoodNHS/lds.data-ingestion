@@ -1,7 +1,7 @@
 # Convenience targets; each is a thin wrapper so the same commands run locally and in pipelines.
 ENV ?= dev
 
-.PHONY: setup validate generate check local build deploy-dry-run
+.PHONY: setup validate generate check local build deploy-dry-run builder builder-export
 
 setup:            ## create .venv and install the engine, dbt and the Snowflake CLI
 	git submodule update --init
@@ -16,6 +16,12 @@ generate:         ## regenerate snowflake/ and models/lds_ingest/ from the manif
 
 check:            ## fail if generated files are out of date
 	lds-engine check
+
+builder:          ## open the manifest builder in a browser (engine checks, saves into datasets/)
+	lds-engine builder
+
+builder-export:   ## write a static copy of the builder to build/builder, for data stewards
+	lds-engine builder --export build/builder
 
 local:            ## full local run on DuckDB (no Snowflake)
 	scripts/local.sh
