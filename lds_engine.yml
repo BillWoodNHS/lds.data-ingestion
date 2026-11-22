@@ -46,3 +46,12 @@ environments:
   dev:
     pipe_mode: replace              # dev pipes are recreated so path filter changes apply
     path_filters: {}                # e.g. { emis: { extraction_group: [group_a], extract_timestamp: ["202611*"] } }
+
+# Manifest builder branding (engine/docs/configuration.md#builder). These are the engine's defaults,
+# written out so they are easy to find. partner_logo: an official OneLondon logo file from the
+# communications team, e.g. branding/onelondon.svg (none yet).
+builder:
+  organisation: North East London
+  service_name: London Data Service
+  partner_name: OneLondon
+  hosted_by: NHS North East London
