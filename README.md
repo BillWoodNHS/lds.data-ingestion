@@ -116,8 +116,11 @@ One-off setup in Azure DevOps (names TBC):
 
 ## Still to decide (TBC)
 
+Every placeholder name and value, where it lives and who confirms it, is listed in
+`engine/docs/placeholders.md`. In short:
+
 - Platform names in `engine/environments/*.yml`: accounts, storage accounts, integrations,
-  warehouses and roles.
+  warehouses, roles, and where each environment's allocation registries live (`registries`).
 - Naming conventions in `lds_engine.yml` (the current values are placeholders).
 - IG confirmation of the PII taxonomy.
 - The dbt connection's default database (`LDS_DBT_DATABASE` in `profiles/profiles.yml`). Generated
