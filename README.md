@@ -66,9 +66,9 @@ tables in `local.duckdb` and runs `dbt build --target local`. DuckDB has no per-
 
 Every dataset gets generated monitoring, described in `engine/docs/observability.md`:
 - `<dataset>__status`: health per table (`ok` / `attention` / `incomplete`);
-- row accounting (`reconciliation`, `not_presented`);
+- row accounting (`<dataset>__reconciliation`, `<dataset>__not_presented`), one model each for the
+  dataset with a `table_name` column, like `exceptions` and `unclassified_columns`;
 - lineage columns on `latest` and `continuum`;
-- `unclassified_columns`;
 - source freshness;
 - in Snowflake, load audit, unloaded files and pipe health.
 
